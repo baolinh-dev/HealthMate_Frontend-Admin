@@ -25,7 +25,7 @@ const LoginPage = () => {
       if (data.token && data.user) {
         if (data.user.role === "admin") {
           localStorage.setItem("token", data.token); // Lưu token
-          window.location.href = "/"; // Chuyển hướng đến trang Admin
+          window.location.href = "/admin"; // Chuyển hướng đến trang Admin
         } else {
           setError("You are not authorized to access this page.");
         }
