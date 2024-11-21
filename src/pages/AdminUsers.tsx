@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import UsersList from "../components/UsersList";
+import AdminLayout from "../components/Layout/AdminLayout";
 
-const AdminPage = () => {
+const AdminUsers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate(); // Dùng để chuyển hướng
 
@@ -22,9 +23,11 @@ const AdminPage = () => {
 
   return (
     <div>
-      <UsersList />
+      <AdminLayout>
+        <UsersList />
+      </AdminLayout>
     </div>
   );
 };
 
-export default AdminPage;
+export default AdminUsers;
