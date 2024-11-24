@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { AiFillHome, AiFillAppstore, AiFillFileText } from "react-icons/ai"; // Import icons 
+import { GiWeightLiftingUp } from "react-icons/gi";
 import logo from "../../../assets/logo.png";
 
 const Sidebar: React.FC = () => {
@@ -12,27 +14,27 @@ const Sidebar: React.FC = () => {
         <ul style={navListStyle}>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin">
-              Home
+              <AiFillHome style={iconStyle} /> Home
             </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin/users">
-              Users
+              <AiFillAppstore style={iconStyle} /> Users
             </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin/blog">
-              Blog
+              <AiFillFileText style={iconStyle} /> Blog
             </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin/workout">
-              Workout
+              <GiWeightLiftingUp style={iconStyle} /> Workout
             </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/">
-              Logout
+              <AiFillHome style={iconStyle} /> Logout
             </Link>
           </li>
         </ul>
@@ -72,10 +74,15 @@ const navListItemStyle: React.CSSProperties = {
 const navListTextStyle: React.CSSProperties = {
   border: "1px solid #ddd",
   padding: "15px 0 15px 15px",
-  display: "flex", 
+  display: "flex",
+  alignItems: "center",
   borderRadius: "20px",
-  color: "#333", // Thay đổi màu chữ theo ý bạn
-  textDecoration: "none", // Bỏ gạch chân
+  color: "#333",
+  textDecoration: "none",
+};
+
+const iconStyle: React.CSSProperties = {
+  marginRight: "10px",  // Add space between icon and text
 };
 
 export default Sidebar;
