@@ -11,17 +11,28 @@ const Sidebar: React.FC = () => {
       <nav>
         <ul style={navListStyle}>
           <li style={navListItemStyle}>
-            <Link style={navListTextStyle} to="/admin">Home</Link>
+            <Link style={navListTextStyle} to="/admin">
+              Home
+            </Link>
           </li>
           <li style={navListItemStyle}>
-            <Link style={navListTextStyle} to="/admin/users">Users</Link>
+            <Link style={navListTextStyle} to="/admin/users">
+              Users
+            </Link>
           </li>
           <li style={navListItemStyle}>
-            <Link style={navListTextStyle} to="/admin/blog">Blog</Link>
+            <Link style={navListTextStyle} to="/admin/blog">
+              Blog
+            </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin/workout">
               Workout
+            </Link>
+          </li>
+          <li style={navListItemStyle}>
+            <Link style={navListTextStyle} to="/">
+              Logout
             </Link>
           </li>
         </ul>
@@ -55,17 +66,16 @@ const navListStyle: React.CSSProperties = {
 };
 
 const navListItemStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: "15px",
-  borderRadius: "20px",
-  marginBottom: "20px", 
-}; 
+  marginBottom: "20px",
+};
 
 const navListTextStyle: React.CSSProperties = {
-  color: '#333', // Thay đổi màu chữ theo ý bạn
-  textDecoration: 'none', // Bỏ gạch chân
-}; 
-
-
+  border: "1px solid #ddd",
+  padding: "15px 0 15px 15px",
+  display: "flex", 
+  borderRadius: "20px",
+  color: "#333", // Thay đổi màu chữ theo ý bạn
+  textDecoration: "none", // Bỏ gạch chân
+};
 
 export default Sidebar;
