@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import UsersList from "../components/UsersList";
+import UsersList from "../components/UsersManagement";
 import AdminLayout from "../components/Layout/AdminLayout";
 
 const AdminBlog = () => {
