@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5004"; 
+const API_BASE_URL = "http://localhost:5004";
 
 interface LoginResponse {
   token?: string;
@@ -6,7 +6,8 @@ interface LoginResponse {
     role: string;
   };
   message?: string;
-}  
+}
+
 interface AddUserResponse {
   message: string;
 }
@@ -27,7 +28,7 @@ export const addUser = async (userData: { name: string; email: string; password:
       throw new Error(data.message || "Error adding user");
     }
 
-    return await response.json(); // Return response with message
+    return await response.json();
   } catch (error) {
     console.error("Error adding user:", error);
     throw error;
@@ -44,7 +45,7 @@ export const loginAdmin = async (email: string, password: string): Promise<Login
   });
 
   if (!response.ok) {
-    throw new Error('Login failed'); // Ném lỗi nếu phản hồi không thành công
+    throw new Error('Login failed');
   }
 
   return response.json();
@@ -59,14 +60,12 @@ export const getUsers = async (token: string): Promise<any> => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch users'); // Ném lỗi nếu phản hồi không thành công
+    throw new Error('Failed to fetch users');
   }
 
   return response.json();
 };
 
-
-// Sửa thông tin người dùng
 export const editUser = async (token: string, email: string, updatedData: { name?: string, password?: string, role?: string }): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/api/users/${email}`, {
     method: "PUT",
@@ -78,15 +77,13 @@ export const editUser = async (token: string, email: string, updatedData: { name
   });
 
   if (!response.ok) {
-    const errorData = await response.json(); // Lấy dữ liệu lỗi nếu có
+    const errorData = await response.json();
     throw new Error(errorData.message || 'Failed to update user');
   }
 
-  return response.json(); // Trả về kết quả thành công
+  return response.json();
 };
 
-
-// Xóa người dùng
 export const deleteUser = async (email: string, token: string): Promise<any> => {   
   const response = await fetch(`${API_BASE_URL}/api/users/${email}`, {
     method: "DELETE",
@@ -102,4 +99,3 @@ export const deleteUser = async (email: string, token: string): Promise<any> => 
 
   return response.json();
 };
-

@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { AiFillHome, AiFillAppstore, AiFillFileText } from "react-icons/ai"; // Import icons  
 import { CiLogout } from "react-icons/ci";
-import { GiWeightLiftingUp } from "react-icons/gi";
+import { GiWeightLiftingUp } from "react-icons/gi"; 
+import { CgGym } from "react-icons/cg";
 import logo from "../../../assets/logo.png";
 
 const Sidebar: React.FC = () => {
@@ -22,15 +23,20 @@ const Sidebar: React.FC = () => {
             <Link style={navListTextStyle} to="/admin/users">
               <AiFillAppstore style={iconStyle} /> Users
             </Link>
+          </li> 
+          <li style={navListItemStyle}>
+            <Link style={navListTextStyle} to="/admin/workout">
+              <GiWeightLiftingUp style={iconStyle} /> Workout
+            </Link>
+          </li>
+          <li style={navListItemStyle}>
+            <Link style={navListTextStyle} to="/admin/excercises">
+              <CgGym style={iconStyle} /> Excercises
+            </Link>
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/admin/blog">
               <AiFillFileText style={iconStyle} /> Blog
-            </Link>
-          </li>
-          <li style={navListItemStyle}>
-            <Link style={navListTextStyle} to="/admin/workout">
-              <GiWeightLiftingUp style={iconStyle} /> Workout
             </Link>
           </li>
           <li style={navListItemStyle}>

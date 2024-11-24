@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUsers, addUser, deleteUser, editUser } from "../api"; // Thêm editUser vào API
+import { getUsers, addUser, deleteUser, editUser } from "../apis/usersApi"; // Thêm editUser vào API
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,7 +10,7 @@ interface User {
   role: string;
 }
 
-const UserList: React.FC = () => {
+const UsersManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAddUserForm, setShowAddUserForm] = useState<boolean>(false);
@@ -428,4 +428,4 @@ const modalStyle: React.CSSProperties = {
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
 };
 
-export default UserList;
+export default UsersManagement;

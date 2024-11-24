@@ -5,6 +5,7 @@ import AdminUsers from "../pages/AdminUsers";
 import AdminBlog from "../pages/AdminBlog";
 import AdminWorkout from "../pages/AdminWorkout";
 import LoginPage from "../pages/LoginPage";
+import AdminExcercises from "../pages/AdminExcercises";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -13,8 +14,9 @@ const AppRoutes: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/users" element={<AdminUsers />} /> 
-        <Route path="/admin/blog" element={<AdminBlog />} />
         <Route path="/admin/workout" element={<AdminWorkout />} />
+        <Route path="/admin/excercises" element={<AdminExcercises />} />
+        <Route path="/admin/blog" element={<AdminBlog />} />
       </Routes>
     </Router>
   );

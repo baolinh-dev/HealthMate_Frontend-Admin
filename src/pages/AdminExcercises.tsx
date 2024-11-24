@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import UsersManagement from "../components/UsersManagement";
+import ExerciseManagement from "../components/ExerciseManagement";
 import AdminLayout from "../components/Layout/AdminLayout";
 
-const AdminUsers = () => {
+const AdminWorkout = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate(); // Dùng để chuyển hướng
 
@@ -24,10 +24,10 @@ const AdminUsers = () => {
   return (
     <div>
       <AdminLayout>
-        <UsersManagement />
+        <ExerciseManagement />
       </AdminLayout>
     </div>
   );
 };
 
-export default AdminUsers;
+export default AdminWorkout;

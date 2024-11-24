@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginAdmin } from "../api";
+import { loginAdmin } from "../apis/usersApi";
 
 interface User {
   role: string;
