@@ -15,7 +15,7 @@ interface AddUserResponse {
 
 export const addUser = async (userData: { name: string; email: string; password: string; role: string }, token: string): Promise<AddUserResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users`, {
+    const response = await fetch(`${API_BASE_URL}/api/users`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -37,7 +37,7 @@ export const addUser = async (userData: { name: string; email: string; password:
 };
 
 export const loginAdmin = async (email: string, password: string): Promise<LoginResponse> => {
-  const response = await fetch(`${API_BASE_URL}/login`, {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const loginAdmin = async (email: string, password: string): Promise<Login
 };
 
 export const getUsers = async (token: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/users`, {
+  const response = await fetch(`${API_BASE_URL}/api/users`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ export const getUsers = async (token: string): Promise<any> => {
 
 // Sửa thông tin người dùng
 export const editUser = async (token: string, email: string, updatedData: { name?: string, password?: string, role?: string }): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/users/${email}`, {
+  const response = await fetch(`${API_BASE_URL}/api/users/${email}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -90,7 +90,7 @@ export const editUser = async (token: string, email: string, updatedData: { name
 
 // Xóa người dùng
 export const deleteUser = async (email: string, token: string): Promise<any> => {   
-  const response = await fetch(`${API_BASE_URL}/users/${email}`, {
+  const response = await fetch(`${API_BASE_URL}/api/users/${email}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
