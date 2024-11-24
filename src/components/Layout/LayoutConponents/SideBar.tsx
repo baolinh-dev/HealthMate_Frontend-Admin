@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AiFillHome, AiFillAppstore, AiFillFileText } from "react-icons/ai"; // Import icons 
+import { AiFillHome, AiFillAppstore, AiFillFileText } from "react-icons/ai"; // Import icons  
+import { CiLogout } from "react-icons/ci";
 import { GiWeightLiftingUp } from "react-icons/gi";
 import logo from "../../../assets/logo.png";
 
@@ -34,7 +35,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li style={navListItemStyle}>
             <Link style={navListTextStyle} to="/">
-              <AiFillHome style={iconStyle} /> Logout
+              <CiLogout  style={iconStyle} /> Logout
             </Link>
           </li>
         </ul>
