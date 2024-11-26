@@ -241,39 +241,46 @@ const UsersManagement: React.FC = () => {
                 handleAddUser();
               }}
             >
-              <div>
-                <label>Name:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Name:</label>
                 <input
+                  style={formFieldInput}
                   type="text"
+                  placeholder="Name"
                   name="name"
                   value={newUser.name}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-              <div>
-                <label>Email:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Email:</label>
                 <input
+                  style={formFieldInput}
                   type="email"
+                  placeholder="Email"
                   name="email"
                   value={newUser.email}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-              <div>
-                <label>Password:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Password:</label>
                 <input
+                  style={formFieldInput}
                   type="password"
+                  placeholder="Password"
                   name="password"
                   value={newUser.password}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-              <div>
-                <label>Role:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Role:</label>
                 <select
+                  style={formFieldSelect}
                   name="role"
                   value={newUser.role}
                   onChange={handleRoleChange}
@@ -282,16 +289,16 @@ const UsersManagement: React.FC = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <button type="submit" style={buttonStyle}>
+              <button type="submit" style={{ ...addButtonStyle, marginRight: "12px" }}>
                 Add User
               </button>
+              <button
+                onClick={() => setShowAddUserForm(false)}
+                style={deleteButtonStyle}
+              >
+                Cancel
+              </button>
             </form>
-            <button
-              onClick={() => setShowAddUserForm(false)}
-              style={buttonStyle}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
@@ -406,18 +413,8 @@ const tdStyle: React.CSSProperties = {
   padding: "8px",
 };
 
-const buttonStyle: React.CSSProperties = {
-  marginRight: "10px",
-  padding: "5px 10px",
-  backgroundColor: "#f44336", // Red color for delete button
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-};
-
 const addButtonStyle: React.CSSProperties = {
-  padding: "10px 15px",
+  padding: "5px 10px",
   backgroundColor: "#28a745",
   color: "white",
   border: "none",
