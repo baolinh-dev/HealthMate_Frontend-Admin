@@ -170,15 +170,15 @@ const UsersManagement: React.FC = () => {
 
   return (
     <div>
-      <h2>User Management</h2>
+      <h2>Healthmate - User Management</h2>
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
         <>
           <div>
-            <label>Search Users:</label>
             <input
               type="text"
+              style={inputSearch}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, email, or role"
@@ -187,11 +187,11 @@ const UsersManagement: React.FC = () => {
           <table style={tableStyle}>
             <thead>
               <tr>
-                <th style={thStyle}>Name</th>
-                <th style={thStyle}>Email</th>
-                <th style={thStyle}>Password</th>
-                <th style={thStyle}>Role</th>
-                <th style={thStyle}>Action</th>
+                <th style={{ ...thStyle, width: "30%" }}>Name</th>
+                <th style={{ ...thStyle, width: "30%" }}>Email</th>
+                <th style={{ ...thStyle, width: "15%" }}>Password</th>
+                <th style={{ ...thStyle, width: "10%" }}>Role</th>
+                <th style={{ ...thStyle, width: "15%" }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -207,13 +207,13 @@ const UsersManagement: React.FC = () => {
                         setUserToEdit(user);
                         setShowEditUserForm(true);
                       }}
-                      style={buttonStyle}
+                      style={editButtonStyle}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(user.email)}
-                      style={buttonStyle}
+                      style={deleteButtonStyle}
                     >
                       Delete
                     </button>
@@ -307,19 +307,21 @@ const UsersManagement: React.FC = () => {
                 handleEditUser();
               }}
             >
-              <div>
-                <label>Name:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Name:</label>
                 <input
                   type="text"
                   name="name"
+                  style={formFieldInput}
                   value={userToEdit.name}
                   onChange={handleEditInputChange}
                   required
                 />
               </div>
-              <div>
-                <label>Email:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Email:</label>
                 <input
+                  style={formFieldInput}
                   type="email"
                   name="email"
                   value={userToEdit.email}
@@ -328,9 +330,10 @@ const UsersManagement: React.FC = () => {
                   disabled
                 />
               </div>
-              <div>
-                <label>Password:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Password:</label>
                 <input
+                  style={formFieldInput}
                   type="password"
                   name="password"
                   value={userToEdit.password}
@@ -338,9 +341,10 @@ const UsersManagement: React.FC = () => {
                   required
                 />
               </div>
-              <div>
-                <label>Role:</label>
+              <div style={formField}>
+                <label style={formFieldLabel}>Role:</label>
                 <select
+                  style={formFieldSelect}
                   name="role"
                   value={userToEdit.role}
                   onChange={handleEditRoleChange}
@@ -349,16 +353,22 @@ const UsersManagement: React.FC = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <button type="submit" style={buttonStyle}>
-                Save Changes
-              </button>
+              <div style={buttonFormContainer}>
+                <button
+                  type="submit"
+                  style={{ ...addButtonStyle, marginRight: "12px" }}
+                >
+                  Save Changes
+                </button>
+
+                <button
+                  onClick={() => setShowEditUserForm(false)}
+                  style={deleteButtonStyle}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
-            <button
-              onClick={() => setShowEditUserForm(false)}
-              style={buttonStyle}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
@@ -374,6 +384,14 @@ const tableStyle: React.CSSProperties = {
   width: "100%",
   borderCollapse: "collapse",
   marginBottom: "20px",
+};
+
+const inputSearch: React.CSSProperties = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "8px",
+  marginBottom: "12px",
+  border: "1px solid #ccc",
 };
 
 const thStyle: React.CSSProperties = {
@@ -400,11 +418,29 @@ const buttonStyle: React.CSSProperties = {
 
 const addButtonStyle: React.CSSProperties = {
   padding: "10px 15px",
-  backgroundColor: "#008CBA",
+  backgroundColor: "#28a745",
   color: "white",
   border: "none",
   borderRadius: "5px",
   cursor: "pointer",
+};
+const editButtonStyle: React.CSSProperties = {
+  padding: "5px 10px",
+  backgroundColor: "#28a745",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  marginRight: "8px",
+};
+const deleteButtonStyle: React.CSSProperties = {
+  padding: "5px 10px",
+  backgroundColor: "#dc3545",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  marginRight: "8px",
 };
 
 // Modal Styles
@@ -421,11 +457,39 @@ const modalOverlayStyle: React.CSSProperties = {
   zIndex: 1000,
 };
 
+const formField: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  marginBottom: "12px",
+};
+
+const formFieldLabel: React.CSSProperties = {
+  marginBottom: "4px",
+};
+
+const formFieldInput: React.CSSProperties = {
+  padding: "8px",
+  borderRadius: "8px",
+  border: "1px solid rgb(204, 204, 204)",
+};
+
+const formFieldSelect: React.CSSProperties = {
+  padding: "8px",
+  borderRadius: "8px",
+  border: "1px solid rgb(204, 204, 204)",
+};
+
+const buttonFormContainer: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "flex-end",
+};
+
 const modalStyle: React.CSSProperties = {
   backgroundColor: "white",
   padding: "20px",
   borderRadius: "5px",
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  minWidth: "400px",
 };
 
 export default UsersManagement;
