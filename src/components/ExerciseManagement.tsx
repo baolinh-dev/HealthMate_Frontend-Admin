@@ -85,7 +85,7 @@ const ExerciseManagement: React.FC = () => {
             <th style={{ ...styles.th, width: "10%" }}>Sets</th>
             <th style={{ ...styles.th, width: "15%" }}>Time per Set</th>
             <th style={{ ...styles.th, width: "15%" }}>Rest Time</th>
-            <th style={{ ...styles.th, width: "15%" }}>Image</th> 
+            <th style={{ ...styles.th, width: "15%" }}>Image</th>
             <th style={{ ...styles.th, width: "10%" }}>Calories</th>
             <th style={{ ...styles.th, width: "15%" }}>Actions</th>
           </tr>
@@ -96,15 +96,15 @@ const ExerciseManagement: React.FC = () => {
               <td style={styles.td}>{exercise.name}</td>
               <td style={styles.td}>{exercise.sets}</td>
               <td style={styles.td}>{exercise.timePerSet}</td>
-              <td style={styles.td}>{exercise.restTimePerSet}</td> 
-              
+              <td style={styles.td}>{exercise.restTimePerSet}</td>
+
               <td style={styles.td}>
                 <img
                   src={exercise.exerciseImage}
                   alt={exercise.name}
                   style={styles.image}
-                /> 
-              </td> 
+                />
+              </td>
               <td style={styles.td}>{exercise.caloriesPerSet}</td>
               <td style={styles.td}>
                 <button
@@ -201,9 +201,9 @@ const ExerciseManagement: React.FC = () => {
                 }
                 style={styles.formFieldInput}
               />
-            </div> 
+            </div>
 
-                        <div style={styles.formField}>
+            <div style={styles.formField}>
               <label style={styles.formFieldLabel}>Calories</label>
               <input
                 type="number"
@@ -231,7 +231,6 @@ const ExerciseManagement: React.FC = () => {
   );
 };
 
-
 const styles: { [key: string]: React.CSSProperties } = {
   searchInput: {
     marginBottom: 20,
@@ -240,30 +239,30 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     borderRadius: 5,
     border: "1px solid #ddd",
-  },  
+  },
 
-  formField:  {
+  formField: {
     display: "flex",
     flexDirection: "column",
     marginBottom: "12px",
   },
-  
+
   formFieldLabel: {
     marginBottom: "4px",
   },
-  
+
   formFieldInput: {
     padding: "8px",
     borderRadius: "8px",
     border: "1px solid rgb(204, 204, 204)",
   },
-  
+
   formFieldSelect: {
     padding: "8px",
     borderRadius: "8px",
     border: "1px solid rgb(204, 204, 204)",
   },
-  
+
   table: {
     width: "100%",
     borderCollapse: "collapse",
