@@ -81,11 +81,12 @@ const ExerciseManagement: React.FC = () => {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={{ ...styles.th, width: "25%" }}>Name</th>
-            <th style={{ ...styles.th, width: "15%" }}>Sets</th>
+            <th style={{ ...styles.th, width: "20%" }}>Name</th>
+            <th style={{ ...styles.th, width: "10%" }}>Sets</th>
             <th style={{ ...styles.th, width: "15%" }}>Time per Set</th>
             <th style={{ ...styles.th, width: "15%" }}>Rest Time</th>
-            <th style={{ ...styles.th, width: "15%" }}>Image</th>
+            <th style={{ ...styles.th, width: "15%" }}>Image</th> 
+            <th style={{ ...styles.th, width: "10%" }}>Calories</th>
             <th style={{ ...styles.th, width: "15%" }}>Actions</th>
           </tr>
         </thead>
@@ -95,14 +96,16 @@ const ExerciseManagement: React.FC = () => {
               <td style={styles.td}>{exercise.name}</td>
               <td style={styles.td}>{exercise.sets}</td>
               <td style={styles.td}>{exercise.timePerSet}</td>
-              <td style={styles.td}>{exercise.restTimePerSet}</td>
+              <td style={styles.td}>{exercise.restTimePerSet}</td> 
+              
               <td style={styles.td}>
                 <img
                   src={exercise.exerciseImage}
                   alt={exercise.name}
                   style={styles.image}
-                />
-              </td>
+                /> 
+              </td> 
+              <td style={styles.td}>{exercise.caloriesPerSet}</td>
               <td style={styles.td}>
                 <button
                   onClick={() => handleEdit(exercise)}
@@ -195,6 +198,19 @@ const ExerciseManagement: React.FC = () => {
                 value={form.exerciseImage || ""}
                 onChange={(e) =>
                   setForm({ ...form, exerciseImage: e.target.value })
+                }
+                style={styles.formFieldInput}
+              />
+            </div> 
+
+                        <div style={styles.formField}>
+              <label style={styles.formFieldLabel}>Calories</label>
+              <input
+                type="number"
+                placeholder="Calories per set"
+                value={form.caloriesPerSet || ""}
+                onChange={(e) =>
+                  setForm({ ...form, caloriesPerSet: Number(e.target.value) })
                 }
                 style={styles.formFieldInput}
               />

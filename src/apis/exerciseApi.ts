@@ -8,7 +8,8 @@ export interface Exercise {
   sets: number;
   timePerSet: number;
   restTimePerSet: number;
-  exerciseImage: string;
+  exerciseImage: string; 
+  caloriesPerSet: number;
 }
 
 export const fetchExercises = async (): Promise<Exercise[]> => {
