@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchBlogs, searchBlogs, updateBlog, deleteBlog, addBlog } from '../../apis/blogsApi'; // Ensure addBlog is imported
 import { Blog } from '../../interfaces/Blog';
 
-const BlogsManagement: React.FC = () => {
+const BlogsTable: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -74,13 +74,13 @@ const BlogsManagement: React.FC = () => {
     }
   };
 
-  const handleModalSave = async (title: string, content: string, status: 'draft' | 'published') => {
+  const handleModalSave = async (title: string, content: string, status: 'draft' | 'published', image: string) => {
     if (selectedBlog) {
       try {
-        await updateBlog(selectedBlog._id, { title, content, status });
+        await updateBlog(selectedBlog._id, { title, content, status, image }); // Include image in the update
         setSearchResult((prev) =>
           prev.map((blog) =>
-            blog._id === selectedBlog._id ? { ...blog, title, content, status } : blog
+            blog._id === selectedBlog._id ? { ...blog, title, content, status, image } : blog
           )
         );
       } catch (err) {
@@ -279,7 +279,13 @@ const BlogsManagement: React.FC = () => {
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
-            <button onClick={() => handleModalSave(selectedBlog!.title, selectedBlog!.content, selectedBlog!.status)}>Save</button>
+            <input
+              type="text"
+              value={selectedBlog ? selectedBlog.image : ''}
+              onChange={(e) => setSelectedBlog((prev) => prev ? { ...prev, image: e.target.value } : prev)}
+              placeholder="Image URL"
+            />
+            <button onClick={() => handleModalSave(selectedBlog!.title, selectedBlog!.content, selectedBlog!.status, selectedBlog!.image)}>Save</button>
             <button onClick={handleModalClose}>Cancel</button>
           </div>
         </div>
@@ -307,4 +313,4 @@ const modalContentStyle: React.CSSProperties = {
   width: '400px',
 };
 
-export default BlogsManagement;
+export default BlogsTable;
