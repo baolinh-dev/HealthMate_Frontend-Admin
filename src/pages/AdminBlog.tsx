@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import UsersList from "../components/UsersManagement";
 import AdminLayout from "../components/Layout/AdminLayout";
+import BlogsTable from "../components/blogs/BlogsTable";
 
 const AdminBlog = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +25,7 @@ const AdminBlog = () => {
   return (
     <div>
       <AdminLayout>
-        <p>Đây là trang blog</p>
+        <BlogsTable />
       </AdminLayout>
     </div>
   );
