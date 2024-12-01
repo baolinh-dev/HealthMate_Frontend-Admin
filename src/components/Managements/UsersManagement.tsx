@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUsers, addUser, deleteUser, editUser } from "../apis/usersApi"; // Thêm editUser vào API
+import { getUsers, addUser, deleteUser, editUser } from "../../apis/usersApi"; // Thêm editUser vào API
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

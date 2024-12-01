@@ -4,9 +4,10 @@ import axios from "axios";
 import { Blog } from "../interfaces/Blog";
 const API_BASE_URL = "http://localhost:5004/api/blogs";
 
+// Fetch tất cả blogs
 export const fetchBlogs = async (): Promise<Blog[]> => {
   try {
-    const token = localStorage.getItem("token"); // Hoặc lấy token từ nơi lưu trữ (localStorage, sessionStorage, hoặc Redux store)
+    const token = localStorage.getItem("token");
 
     if (!token) {
       throw new Error("No token provided");
@@ -18,10 +19,10 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
       },
     });
 
-    return response.data.blogs; // Giả sử backend trả về { blogs: [...] }
+    return response.data.blogs;
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    throw error;
   }
 };
 
@@ -32,7 +33,7 @@ export const searchBlogs = async (
   authorId?: string
 ): Promise<Blog[]> => {
   try {
-    const token = localStorage.getItem("token"); // Giả sử token được lưu trong localStorage. Bạn có thể thay đổi phương thức lấy token tùy theo cách bạn quản lý xác thực.
+    const token = localStorage.getItem("token");
 
     const params: any = {};
     if (query) params.query = query;
@@ -41,7 +42,7 @@ export const searchBlogs = async (
 
     const config = {
       headers: {
-        Authorization: token ? `Bearer ${token}` : "", // Thêm token vào headers, nếu có
+        Authorization: token ? `Bearer ${token}` : "", // Thêm token vào headers nếu có
       },
     };
 
@@ -54,29 +55,79 @@ export const searchBlogs = async (
     console.error("Error searching blogs:", error);
     throw error;
   }
-}; 
+};
 
+// Cập nhật blog
 export const updateBlog = async (
-    blogId: string,
-    updatedData: any
-  ): Promise<any> => {
-    try {
-      const token = localStorage.getItem('token'); // Giả sử token được lưu trong localStorage.
-  
-      const config = {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : '', // Thêm token vào headers, nếu có
-        },
-      };
-  
-      const response = await axios.put(
-        `${API_BASE_URL}/updateAdmin/${blogId}`,
-        updatedData,
-        config
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error updating blog:', error);
-      throw error;
+  blogId: string,
+  updatedData: any
+): Promise<any> => {
+  try {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+
+    const config = {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "", // Thêm token vào headers
+      },
+    };
+
+    const response = await axios.put(
+      `${API_BASE_URL}/updateAdmin/${blogId}`,
+      updatedData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    throw error;
+  }
+};
+
+// Xóa blog
+export const deleteBlog = async (blogId: string): Promise<any> => {
+  try {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+
+    const config = {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "", // Thêm token vào headers
+      },
+    };
+
+    const response = await axios.delete(
+      `${API_BASE_URL}/delete/${blogId}`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    throw error;
+  }
+};
+
+export const addBlog = async (newBlogData: any): Promise<any> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("No token provided");
     }
-  };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
+      },
+    };
+
+    const response = await axios.post(
+      `${API_BASE_URL}/add`, // API route để thêm blog
+      newBlogData,
+      config
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error adding blog:", error);
+    throw error;
+  }
+};

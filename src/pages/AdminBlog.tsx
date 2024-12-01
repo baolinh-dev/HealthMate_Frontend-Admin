@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import UsersList from "../components/UsersManagement";
+import UsersList from "../components/Managements/UsersManagement";
 import AdminLayout from "../components/Layout/AdminLayout";
-import BlogsTable from "../components/blogs/BlogsTable";
+import BlogsManagement from "../components/Managements/BlogsManagement";
 
 const AdminBlog = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,7 +25,7 @@ const AdminBlog = () => {
   return (
     <div>
       <AdminLayout>
-        <BlogsTable />
+        <BlogsManagement />
       </AdminLayout>
     </div>
   );

@@ -5,7 +5,7 @@ import {
   updateExercise,
   deleteExercise,
   Exercise,
-} from "../apis/exerciseApi";
+} from "../../apis/exerciseApi";
 
 const ExerciseManagement: React.FC = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);

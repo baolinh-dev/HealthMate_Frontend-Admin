@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ExerciseManagement from "../components/ExerciseManagement";
+import ExerciseManagement from "../components/Managements/ExerciseManagement";
 import AdminLayout from "../components/Layout/AdminLayout";
 
 const AdminWorkout = () => {
