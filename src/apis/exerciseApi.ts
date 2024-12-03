@@ -1,26 +1,42 @@
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5004/api/exercises";
-
 export interface Exercise {
   _id: string;
   name: string;
   sets: number;
   timePerSet: number;
   restTimePerSet: number;
-  exerciseImage: string; 
+  exerciseImage: string;
   caloriesPerSet: number;
+  updatedAt: string;
 }
 
-export const fetchExercises = async (): Promise<Exercise[]> => {
+export interface FetchExercisesResponse {
+  exercises: Exercise[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+
+export const fetchExercises = async (page: number, searchTerm: string = "") => {
+  const url = `${API_BASE_URL}?page=${page}&search=${searchTerm}`;
   try {
-    const response = await axios.get(API_BASE_URL);
-    return response.data;
+    const response = await fetch(url);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API error response:", errorText);
+      throw new Error(`Error fetching exercises: ${response.statusText}`);
+    }
+    return await response.json();
   } catch (error) {
     console.error("Error fetching exercises:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    throw new Error("Invalid JSON response or network error");
   }
 };
+
+
 
 export const createExercise = async (exercise: Exercise): Promise<Exercise> => {
   try {
