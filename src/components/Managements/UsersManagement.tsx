@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getUsers, addUser, deleteUser, editUser } from "../../apis/usersApi"; // Thêm editUser vào API
+import { getUsers, addUser, deleteUser, editUser } from "../../apis/usersApi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import styles from "./UsersManagementStyles"; // Import the styles
 
 interface User {
   name: string;
@@ -14,14 +15,14 @@ const UsersManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAddUserForm, setShowAddUserForm] = useState<boolean>(false);
-  const [showEditUserForm, setShowEditUserForm] = useState<boolean>(false); // Mới thêm
+  const [showEditUserForm, setShowEditUserForm] = useState<boolean>(false);
   const [newUser, setNewUser] = useState<User>({
     name: "",
     email: "",
     password: "",
     role: "user",
   });
-  const [userToEdit, setUserToEdit] = useState<User | null>(null); // Lưu trữ người dùng cần sửa
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const filteredUsers = users.filter(
     (user) =>
@@ -29,6 +30,8 @@ const UsersManagement: React.FC = () => {
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -41,8 +44,9 @@ const UsersManagement: React.FC = () => {
       }
 
       try {
-        const usersData = await getUsers(token);
+        const usersData = await getUsers(token, currentPage, 10); // Đã truyền page và limit
         setUsers(usersData.users);
+        setTotalPages(usersData.totalPages); // Cập nhật số trang tổng cộng
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -51,9 +55,8 @@ const UsersManagement: React.FC = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [currentPage]); // Chạy lại khi currentPage thay đổi
 
-  // Hàm thêm người dùng
   const handleAddUser = async () => {
     const token = localStorage.getItem("token");
 
@@ -66,9 +69,11 @@ const UsersManagement: React.FC = () => {
       const response = await addUser(newUser, token);
 
       if (response.message === "User added successfully") {
-        setUsers([...users, newUser]); // Cập nhật danh sách người dùng
+        setUsers((prevUsers) => [...prevUsers, newUser]);
         toast.success("User added successfully.");
-        setShowAddUserForm(false); // Đóng form
+        setShowAddUserForm(false);
+        setNewUser({ name: "", email: "", password: "", role: "user" }); // After adding a user
+        setUserToEdit(null); // After editing a user
       } else {
         toast.error(response.message);
       }
@@ -78,7 +83,6 @@ const UsersManagement: React.FC = () => {
     }
   };
 
-  // Hàm xóa người dùng
   const handleDelete = async (email: string) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?"
@@ -98,7 +102,9 @@ const UsersManagement: React.FC = () => {
       const response = await deleteUser(email, token);
 
       if (response.message === "User deleted successfully") {
-        setUsers(users.filter((user) => user.email !== email)); // Cập nhật danh sách người dùng
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user.email !== email)
+        );
         toast.success("User deleted successfully.");
       } else {
         toast.error(response.message);
@@ -109,18 +115,15 @@ const UsersManagement: React.FC = () => {
     }
   };
 
-  // Hàm thay đổi thông tin người dùng mới
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Hàm thay đổi role
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setNewUser((prev) => ({ ...prev, role: e.target.value }));
   };
 
-  // Hàm thay đổi thông tin người dùng đang sửa
   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (userToEdit) {
       const { name, value } = e.target;
@@ -151,9 +154,11 @@ const UsersManagement: React.FC = () => {
             filteredUsers.map((user) =>
               user.email === userToEdit.email ? userToEdit : user
             )
-          ); // Cập nhật danh sách người dùng
+          );
           toast.success("User updated successfully.");
-          setShowEditUserForm(false); // Đóng form
+          setNewUser({ name: "", email: "", password: "", role: "user" }); // After adding a user
+          setUserToEdit(null); // After editing a user
+          setShowEditUserForm(false);
         } else {
           toast.error(response.message);
         }
@@ -178,42 +183,42 @@ const UsersManagement: React.FC = () => {
           <div>
             <input
               type="text"
-              style={inputSearch}
+              style={styles.inputSearch} // Use imported styles
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, email, or role"
             />
           </div>
-          <table style={tableStyle}>
+          <table style={styles.table}>
             <thead>
               <tr>
-                <th style={{ ...thStyle, width: "30%" }}>Name</th>
-                <th style={{ ...thStyle, width: "30%" }}>Email</th>
-                <th style={{ ...thStyle, width: "15%" }}>Password</th>
-                <th style={{ ...thStyle, width: "10%" }}>Role</th>
-                <th style={{ ...thStyle, width: "15%" }}>Action</th>
+                <th style={{ ...styles.th, width: "30%" }}>Name</th>
+                <th style={{ ...styles.th, width: "30%" }}>Email</th>
+                <th style={{ ...styles.th, width: "15%" }}>Password</th>
+                <th style={{ ...styles.th, width: "10%" }}>Role</th>
+                <th style={{ ...styles.th, width: "15%" }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.map((user, index) => (
                 <tr key={index}>
-                  <td style={tdStyle}>{user.name}</td>
-                  <td style={tdStyle}>{user.email}</td>
-                  <td style={tdStyle}>**********</td>
-                  <td style={tdStyle}>{user.role}</td>
-                  <td style={tdStyle}>
+                  <td style={styles.td}>{user.name}</td>
+                  <td style={styles.td}>{user.email}</td>
+                  <td style={styles.td}>**********</td>
+                  <td style={styles.td}>{user.role}</td>
+                  <td style={styles.td}>
                     <button
                       onClick={() => {
                         setUserToEdit(user);
                         setShowEditUserForm(true);
                       }}
-                      style={editButtonStyle}
+                      style={styles.editButton} // Use imported styles
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(user.email)}
-                      style={deleteButtonStyle}
+                      style={styles.deleteButton} // Use imported styles
                     >
                       Delete
                     </button>
@@ -224,16 +229,35 @@ const UsersManagement: React.FC = () => {
           </table>
         </>
       )}
+      <div style={styles.paginationContainer}>
+        <div style={styles.pagination}>
+          <button
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            style={styles.paginationButton}
+          >
+            Previous
+          </button>
+          <span>{`Page ${currentPage} of ${totalPages}`}</span>
+          <button
+            onClick={() =>
+              setCurrentPage(Math.min(totalPages, currentPage + 1))
+            }
+            disabled={currentPage === totalPages}
+            style={styles.paginationButton}
+          >
+            Next
+          </button>
+        </div>
+      </div>
 
-      {/* Thêm nút để mở form thêm người dùng */}
-      <button onClick={() => setShowAddUserForm(true)} style={addButtonStyle}>
+      <button onClick={() => setShowAddUserForm(true)} style={styles.addButton}>
         Add User
       </button>
 
-      {/* Modal - Add User Form */}
       {showAddUserForm && (
-        <div style={modalOverlayStyle}>
-          <div style={modalStyle}>
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
             <h3>Add New User</h3>
             <form
               onSubmit={(e) => {
@@ -241,10 +265,10 @@ const UsersManagement: React.FC = () => {
                 handleAddUser();
               }}
             >
-              <div style={formField}>
-                <label style={formFieldLabel}>Name:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Name:</label>
                 <input
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   type="text"
                   placeholder="Name"
                   name="name"
@@ -253,10 +277,10 @@ const UsersManagement: React.FC = () => {
                   required
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Email:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Email:</label>
                 <input
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   type="email"
                   placeholder="Email"
                   name="email"
@@ -265,10 +289,10 @@ const UsersManagement: React.FC = () => {
                   required
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Password:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Password:</label>
                 <input
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   type="password"
                   placeholder="Password"
                   name="password"
@@ -277,10 +301,10 @@ const UsersManagement: React.FC = () => {
                   required
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Role:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Role:</label>
                 <select
-                  style={formFieldSelect}
+                  style={styles.formFieldSelect}
                   name="role"
                   value={newUser.role}
                   onChange={handleRoleChange}
@@ -289,12 +313,16 @@ const UsersManagement: React.FC = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <button type="submit" style={{ ...addButtonStyle, marginRight: "12px" }}>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{ ...styles.addButton, marginRight: "12px" }}
+              >
                 Add User
               </button>
               <button
                 onClick={() => setShowAddUserForm(false)}
-                style={deleteButtonStyle}
+                style={styles.deleteButton}
               >
                 Cancel
               </button>
@@ -303,10 +331,9 @@ const UsersManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Modal - Edit User Form */}
       {showEditUserForm && userToEdit && (
-        <div style={modalOverlayStyle}>
-          <div style={modalStyle}>
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
             <h3>Edit User</h3>
             <form
               onSubmit={(e) => {
@@ -314,21 +341,21 @@ const UsersManagement: React.FC = () => {
                 handleEditUser();
               }}
             >
-              <div style={formField}>
-                <label style={formFieldLabel}>Name:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Name:</label>
                 <input
                   type="text"
                   name="name"
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   value={userToEdit.name}
                   onChange={handleEditInputChange}
                   required
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Email:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Email:</label>
                 <input
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   type="email"
                   name="email"
                   value={userToEdit.email}
@@ -337,10 +364,10 @@ const UsersManagement: React.FC = () => {
                   disabled
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Password:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Password:</label>
                 <input
-                  style={formFieldInput}
+                  style={styles.formFieldInput}
                   type="password"
                   name="password"
                   value={userToEdit.password}
@@ -348,10 +375,10 @@ const UsersManagement: React.FC = () => {
                   required
                 />
               </div>
-              <div style={formField}>
-                <label style={formFieldLabel}>Role:</label>
+              <div style={styles.formField}>
+                <label style={styles.formFieldLabel}>Role:</label>
                 <select
-                  style={formFieldSelect}
+                  style={styles.formFieldSelect}
                   name="role"
                   value={userToEdit.role}
                   onChange={handleEditRoleChange}
@@ -360,17 +387,16 @@ const UsersManagement: React.FC = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <div style={buttonFormContainer}>
+              <div style={styles.buttonFormContainer}>
                 <button
                   type="submit"
-                  style={{ ...addButtonStyle, marginRight: "12px" }}
+                  style={{ ...styles.addButton, marginRight: "12px" }}
                 >
                   Save Changes
                 </button>
-
                 <button
                   onClick={() => setShowEditUserForm(false)}
-                  style={deleteButtonStyle}
+                  style={styles.deleteButton}
                 >
                   Cancel
                 </button>
@@ -380,113 +406,9 @@ const UsersManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Toast Container */}
       <ToastContainer />
     </div>
   );
-};
-
-// Style for table, buttons, etc.
-const tableStyle: React.CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  marginBottom: "20px",
-};
-
-const inputSearch: React.CSSProperties = {
-  width: "100%",
-  padding: "12px",
-  borderRadius: "8px",
-  marginBottom: "12px",
-  border: "1px solid #ccc",
-};
-
-const thStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: "8px",
-  textAlign: "left",
-  backgroundColor: "#f4f4f4",
-};
-
-const tdStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: "8px",
-};
-
-const addButtonStyle: React.CSSProperties = {
-  padding: "5px 10px",
-  backgroundColor: "#28a745",
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-};
-const editButtonStyle: React.CSSProperties = {
-  padding: "5px 10px",
-  backgroundColor: "#28a745",
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-  marginRight: "8px",
-};
-const deleteButtonStyle: React.CSSProperties = {
-  padding: "5px 10px",
-  backgroundColor: "#dc3545",
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-  marginRight: "8px",
-};
-
-// Modal Styles
-const modalOverlayStyle: React.CSSProperties = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0,0,0,0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
-};
-
-const formField: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  marginBottom: "12px",
-};
-
-const formFieldLabel: React.CSSProperties = {
-  marginBottom: "4px",
-};
-
-const formFieldInput: React.CSSProperties = {
-  padding: "8px",
-  borderRadius: "8px",
-  border: "1px solid rgb(204, 204, 204)",
-};
-
-const formFieldSelect: React.CSSProperties = {
-  padding: "8px",
-  borderRadius: "8px",
-  border: "1px solid rgb(204, 204, 204)",
-};
-
-const buttonFormContainer: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "flex-end",
-};
-
-const modalStyle: React.CSSProperties = {
-  backgroundColor: "white",
-  padding: "20px",
-  borderRadius: "5px",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  minWidth: "400px",
 };
 
 export default UsersManagement;

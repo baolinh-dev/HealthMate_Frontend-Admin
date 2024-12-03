@@ -51,8 +51,8 @@ export const loginAdmin = async (email: string, password: string): Promise<Login
   return response.json();
 };
 
-export const getUsers = async (token: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/users`, {
+export const getUsers = async (token: string, page: number = 1, limit: number = 10): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/api/users?page=${page}&limit=${limit}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
