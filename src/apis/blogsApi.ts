@@ -5,7 +5,11 @@ import { Blog } from "../interfaces/Blog";
 const API_BASE_URL = "http://localhost:5004/api/blogs";
 
 // Fetch tất cả blogs
-export const fetchBlogs = async (): Promise<Blog[]> => {
+export const fetchBlogs = async (
+  page: number = 1,
+  limit: number = 10,
+  search: string = ""
+): Promise<{ blogs: Blog[], totalItems: number }> => { // Adjusted return type
   try {
     const token = localStorage.getItem("token");
 
@@ -13,18 +17,30 @@ export const fetchBlogs = async (): Promise<Blog[]> => {
       throw new Error("No token provided");
     }
 
-    const response = await axios.get(`${API_BASE_URL}/allAdmin`, {
+    // Tạo URL động dựa trên tham số phân trang và tìm kiếm
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search: search.trim() }), // Thêm tham số `search` nếu có
+    }).toString();
+
+    const response = await axios.get(`${API_BASE_URL}/allAdmin?${queryParams}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
       },
     });
 
-    return response.data.blogs;
+    // Return both the blogs and totalItems
+    return {
+      blogs: response.data.blogs,
+      totalItems: response.data.totalItems, // Assuming the response has a totalItems field
+    };
   } catch (error) {
     console.error("Error fetching blogs:", error);
     throw error;
   }
 };
+
 
 // Hàm tìm kiếm blog
 export const searchBlogs = async (

@@ -1,39 +1,34 @@
 import React, { useEffect, useState } from "react";
-import {
-  fetchBlogs,
-  searchBlogs,
-  updateBlog,
-  deleteBlog,
-  addBlog,
-} from "../../apis/blogsApi"; // Ensure addBlog is imported
-import { Blog } from "../../interfaces/Blog"; 
-import styles from './BlogsTableStyles';
+import { fetchBlogs, updateBlog, deleteBlog, addBlog } from "../../apis/blogsApi";
+import { Blog } from "../../interfaces/Blog";
+import styles from "./BlogsTableStyles";
 
 const BlogsTable: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [status, setStatus] = useState<string>("");
-  const [searchResult, setSearchResult] = useState<Blog[]>([]);
+  const [query, setQuery] = useState<string>(""); // Search text
+  const [status, setStatus] = useState<string>(""); // Filter status
+  const [searchBlog, setSearchBlog] = useState<string>(""); // Search query
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1); // Current page
+  const [perPage, setPerPage] = useState<number>(5); // Number of blogs per page
+  const [totalBlogs, setTotalBlogs] = useState<number>(0); // Total number of blogs
 
   // State for new blog post
   const [newBlogTitle, setNewBlogTitle] = useState<string>("");
   const [newBlogContent, setNewBlogContent] = useState<string>("");
-  const [newBlogStatus, setNewBlogStatus] = useState<"draft" | "published">(
-    "draft"
-  );
+  const [newBlogStatus, setNewBlogStatus] = useState<"draft" | "published">("draft");
   const [newBlogImage, setNewBlogImage] = useState<string>("");
 
   useEffect(() => {
     const loadBlogs = async () => {
       try {
-        const data = await fetchBlogs();
-        setBlogs(data);
-        setSearchResult(data);
+        const { blogs, totalItems } = await fetchBlogs(page, perPage, searchBlog);
+        setBlogs(blogs); // Set the blogs data
+        setTotalBlogs(totalItems); // Set the total count of blogs for pagination
       } catch (err) {
         setError("Error fetching blogs");
       } finally {
@@ -42,15 +37,11 @@ const BlogsTable: React.FC = () => {
     };
 
     loadBlogs();
-  }, []);
+  }, [page, perPage, searchBlog]); // Dependency on page, perPage, and searchBlog
 
-  const handleSearch = async () => {
-    try {
-      const data = await searchBlogs(query, status);
-      setSearchResult(data);
-    } catch (err) {
-      setError("Error searching blogs");
-    }
+  const handleSearch = () => {
+    setPage(1); // Reset to the first page when searching
+    setLoading(true); // Set loading state to true while fetching
   };
 
   const handleEdit = (blog: Blog) => {
@@ -59,51 +50,28 @@ const BlogsTable: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this blog?"
-    );
+    const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
     if (confirmDelete) {
       try {
         await deleteBlog(id);
-        setSearchResult((prev) => prev.filter((blog) => blog._id !== id));
       } catch (err) {
         setError("Error deleting blog");
       }
     }
   };
 
-  const handleStatusChange = async (
-    id: string,
-    newStatus: "draft" | "published"
-  ) => {
+  const handleStatusChange = async (id: string, newStatus: "draft" | "published") => {
     try {
       await updateBlog(id, { status: newStatus });
-      setSearchResult((prev) =>
-        prev.map((blog) =>
-          blog._id === id ? { ...blog, status: newStatus } : blog
-        )
-      );
     } catch (err) {
       setError("Error updating blog status");
     }
   };
 
-  const handleModalSave = async (
-    title: string,
-    content: string,
-    status: "draft" | "published",
-    image: string
-  ) => {
+  const handleModalSave = async (title: string, content: string, status: "draft" | "published", image: string) => {
     if (selectedBlog) {
       try {
-        await updateBlog(selectedBlog._id, { title, content, status, image }); // Include image in the update
-        setSearchResult((prev) =>
-          prev.map((blog) =>
-            blog._id === selectedBlog._id
-              ? { ...blog, title, content, status, image }
-              : blog
-          )
-        );
+        await updateBlog(selectedBlog._id, { title, content, status, image });
       } catch (err) {
         setError("Error updating blog");
       }
@@ -128,6 +96,10 @@ const BlogsTable: React.FC = () => {
     setNewBlogImage("");
   };
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   const handleAddBlog = async () => {
     try {
       const newBlog: Blog = {
@@ -141,7 +113,6 @@ const BlogsTable: React.FC = () => {
         status: newBlogStatus,
       };
       await addBlog(newBlog);
-      setSearchResult((prev) => [...prev, newBlog]); // Update the search result with the new blog
       handleAddModalClose(); // Close the modal after adding
     } catch (err) {
       setError("Error adding blog");
@@ -171,6 +142,7 @@ const BlogsTable: React.FC = () => {
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+    setSearchBlog(e.target.value); // Update the search query directly
   };
 
   const handleStatusChangeInput = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -204,7 +176,9 @@ const BlogsTable: React.FC = () => {
           <option value="published">Published</option>
         </select>
 
-        <button style={styles.searchButton} onClick={handleSearch}>Search</button>
+        <button style={styles.searchButton} onClick={handleSearch}>
+          Search
+        </button>
       </div>
 
       <table style={tableStyle}>
@@ -218,7 +192,7 @@ const BlogsTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {searchResult.map((blog) => (
+          {blogs.map((blog) => (
             <tr key={blog._id}>
               <td style={thTdStyle}>{blog.title}</td>
               <td style={thTdStyle}>{blog.content}</td>
@@ -226,10 +200,7 @@ const BlogsTable: React.FC = () => {
                 <select
                   value={blog.status}
                   onChange={(e) =>
-                    handleStatusChange(
-                      blog._id,
-                      e.target.value as "draft" | "published"
-                    )
+                    handleStatusChange(blog._id, e.target.value as "draft" | "published")
                   }
                 >
                   <option value="draft">Draft</option>
@@ -241,16 +212,10 @@ const BlogsTable: React.FC = () => {
               </td>
               <td style={thTdStyle}>
                 <div style={styles.actionGroup}>
-                  <button
-                    style={styles.editButton}
-                    onClick={() => handleEdit(blog)}
-                  >
+                  <button style={styles.editButton} onClick={() => handleEdit(blog)}>
                     Edit
                   </button>
-                  <button
-                    style={styles.deleteButton}
-                    onClick={() => handleDelete(blog._id)}
-                  >
+                  <button style={styles.deleteButton} onClick={() => handleDelete(blog._id)}>
                     Delete
                   </button>
                 </div>
@@ -259,6 +224,17 @@ const BlogsTable: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      <div style={styles.pagination}>
+        <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Previous
+        </button>
+        <span>Page {page}</span>
+        <button onClick={() => handlePageChange(page + 1)} disabled={page * perPage >= totalBlogs}>
+          Next
+        </button>
+      </div>
+
       <button onClick={handleAddModalOpen} style={styles.addButton}>
         Add New Blog
       </button>
@@ -266,103 +242,102 @@ const BlogsTable: React.FC = () => {
       {/* Modal for adding a new blog */}
       {isAddModalOpen && (
         <div style={styles.modal}>
-          <div style={styles.modal}>
+          <div style={styles.modalContent}>
             <h3>Add New Blog</h3>
             <input
               type="text"
+              placeholder="Title"
               value={newBlogTitle}
               onChange={(e) => setNewBlogTitle(e.target.value)}
-              placeholder="Title"
+              style={styles.input}
             />
             <textarea
+              placeholder="Content"
               value={newBlogContent}
               onChange={(e) => setNewBlogContent(e.target.value)}
-              placeholder="Content"
+              style={styles.textarea}
             />
             <select
               value={newBlogStatus}
-              onChange={(e) =>
-                setNewBlogStatus(e.target.value as "draft" | "published")
-              }
+              onChange={(e) => setNewBlogStatus(e.target.value as "draft" | "published")}
+              style={styles.select}
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
             <input
               type="text"
+              placeholder="Image URL"
               value={newBlogImage}
               onChange={(e) => setNewBlogImage(e.target.value)}
-              placeholder="Image URL"
+              style={styles.input}
             />
-            <button onClick={handleAddBlog}>Add Blog</button>
-            <button onClick={handleAddModalClose}>Cancel</button>
+            <button onClick={handleAddBlog} style={styles.saveButton}>Save</button>
+            <button onClick={handleAddModalClose} style={styles.cancelButton}>Cancel</button>
           </div>
         </div>
       )}
 
-      {/* Modal for editing blog */}
-      {isModalOpen && (
+      {/* Modal for editing a blog */}
+      {isModalOpen && selectedBlog && (
         <div style={styles.modal}>
           <div style={styles.modalContent}>
             <h3>Edit Blog</h3>
             <input
               type="text"
-              value={selectedBlog ? selectedBlog.title : ""}
-              onChange={(e) =>
-                setSelectedBlog((prev) =>
-                  prev ? { ...prev, title: e.target.value } : prev
-                )
-              }
               placeholder="Title"
+              value={selectedBlog.title}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, title: e.target.value })
+              }
+              style={styles.input}
             />
             <textarea
-              value={selectedBlog ? selectedBlog.content : ""}
-              onChange={(e) =>
-                setSelectedBlog((prev) =>
-                  prev ? { ...prev, content: e.target.value } : prev
-                )
-              }
               placeholder="Content"
+              value={selectedBlog.content}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, content: e.target.value })
+              }
+              style={styles.textarea}
             />
             <select
-              value={selectedBlog ? selectedBlog.status : "draft"}
+              value={selectedBlog.status}
               onChange={(e) =>
-                setSelectedBlog((prev) =>
-                  prev
-                    ? {
-                        ...prev,
-                        status: e.target.value as "draft" | "published",
-                      }
-                    : prev
-                )
+                setSelectedBlog({
+                  ...selectedBlog,
+                  status: e.target.value as "draft" | "published",
+                })
               }
+              style={styles.select}
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
             <input
               type="text"
-              value={selectedBlog ? selectedBlog.image : ""}
-              onChange={(e) =>
-                setSelectedBlog((prev) =>
-                  prev ? { ...prev, image: e.target.value } : prev
-                )
-              }
               placeholder="Image URL"
+              value={selectedBlog.image}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, image: e.target.value })
+              }
+              style={styles.input}
             />
             <button
               onClick={() =>
                 handleModalSave(
-                  selectedBlog!.title,
-                  selectedBlog!.content,
-                  selectedBlog!.status,
-                  selectedBlog!.image
+                  selectedBlog.title,
+                  selectedBlog.content,
+                  selectedBlog.status,
+                  selectedBlog.image
                 )
               }
+              style={styles.saveButton}
             >
-              Save
+              Save Changes
             </button>
-            <button onClick={handleModalClose}>Cancel</button>
+            <button onClick={handleModalClose} style={styles.cancelButton}>
+              Cancel
+            </button>
           </div>
         </div>
       )}
