@@ -31,7 +31,11 @@ const UsersManagement: React.FC = () => {
       user.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1); 
+
+  console.log('====================================');
+  console.log("search", searchQuery);
+  console.log('====================================');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -44,7 +48,7 @@ const UsersManagement: React.FC = () => {
       }
 
       try {
-        const usersData = await getUsers(token, currentPage, 10); // Đã truyền page và limit
+        const usersData = await getUsers(token, currentPage, 10, searchQuery); // Đã truyền page và limit
         setUsers(usersData.users);
         setTotalPages(usersData.totalPages); // Cập nhật số trang tổng cộng
       } catch (error) {
@@ -55,7 +59,7 @@ const UsersManagement: React.FC = () => {
     };
 
     fetchUsers();
-  }, [currentPage]); // Chạy lại khi currentPage thay đổi
+  }, [currentPage, searchQuery]); // Chạy lại khi currentPage thay đổi
 
   const handleAddUser = async () => {
     const token = localStorage.getItem("token");
@@ -151,7 +155,7 @@ const UsersManagement: React.FC = () => {
 
         if (response.message === "User updated successfully") {
           setUsers(
-            filteredUsers.map((user) =>
+            users.map((user) =>
               user.email === userToEdit.email ? userToEdit : user
             )
           );
@@ -200,7 +204,7 @@ const UsersManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((user, index) => (
+              {users.map((user, index) => (
                 <tr key={index}>
                   <td style={styles.td}>{user.name}</td>
                   <td style={styles.td}>{user.email}</td>

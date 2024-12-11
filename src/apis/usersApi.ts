@@ -51,8 +51,22 @@ export const loginAdmin = async (email: string, password: string): Promise<Login
   return response.json();
 };
 
-export const getUsers = async (token: string, page: number = 1, limit: number = 10): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/api/users?page=${page}&limit=${limit}`, {
+export const getUsers = async (
+  token: string,
+  page: number = 1,
+  limit: number = 10,
+  search: string = ""
+): Promise<any> => {
+  // Xây dựng URL với query string
+  const url = new URL(`${API_BASE_URL}/api/users`);
+  url.searchParams.append("page", page.toString());
+  url.searchParams.append("limit", limit.toString());
+  if (search.trim() !== "") {
+    url.searchParams.append("search", search.trim());
+  }
+
+  // Gửi yêu cầu tới API
+  const response = await fetch(url.toString(), {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -60,11 +74,12 @@ export const getUsers = async (token: string, page: number = 1, limit: number = 
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch users');
+    throw new Error("Failed to fetch users");
   }
 
   return response.json();
 };
+
 
 export const editUser = async (token: string, email: string, updatedData: { name?: string, password?: string, role?: string }): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/api/users/${email}`, {
