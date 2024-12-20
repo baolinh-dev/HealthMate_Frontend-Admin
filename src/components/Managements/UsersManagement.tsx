@@ -1,15 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { getUsers, addUser, deleteUser, editUser } from "../../apis/usersApi";
+import {
+  getUsers,
+  addUser,
+  deleteUser,
+  editUser,
+  getUserById,
+} from "../../apis/usersApi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./UsersManagementStyles"; // Import the styles
 
 interface User {
+  _id: string;
   name: string;
   email: string;
   password: string;
   role: string;
+  totalCaloriesBurned?: number;
+} 
+
+interface UserApiResponse {
+  user: {
+    name: string;
+    email: string;
+    role: string;
+  };
+  totalCaloriesBurned: number;
 }
+
 
 const UsersManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,10 +35,12 @@ const UsersManagement: React.FC = () => {
   const [showAddUserForm, setShowAddUserForm] = useState<boolean>(false);
   const [showEditUserForm, setShowEditUserForm] = useState<boolean>(false);
   const [newUser, setNewUser] = useState<User>({
+    _id: "",
     name: "",
     email: "",
     password: "",
     role: "user",
+    totalCaloriesBurned: 0,
   });
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -32,10 +52,9 @@ const UsersManagement: React.FC = () => {
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-
-  console.log("====================================");
-  console.log("search", searchQuery);
-  console.log("====================================");
+  const [showUserDetailModal, setShowUserDetailModal] =
+    useState<boolean>(false);
+  const [userDetail, setUserDetail] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -61,22 +80,57 @@ const UsersManagement: React.FC = () => {
     fetchUsers();
   }, [currentPage, searchQuery]); // Chạy lại khi currentPage thay đổi
 
+  const handleShowUserDetail = async (userId: string) => { 
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      toast.error("You must be logged in to view user details.");
+      return;
+    }
+  
+    try {
+      // Sử dụng `any` cho `userFromApi`
+      const userFromApi: any = await getUserById(userId, token); 
+  
+      // Tạo đối tượng `user` từ dữ liệu API
+      const user: User = {
+        _id: userId, // Gán giá trị id từ userId
+        name: userFromApi.user.name,
+        email: userFromApi.user.email,
+        role: userFromApi.user.role,
+        totalCaloriesBurned: userFromApi.totalCaloriesBurned,
+        password: "", // Hoặc một giá trị mặc định nếu cần thiết 
+      };
+  
+      setUserDetail(user);
+      setShowUserDetailModal(true);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      toast.error("An error occurred while fetching user details.");
+    }
+  };
+  
+  
+    
+
   const handleAddUser = async () => {
     const token = localStorage.getItem("token");
-
+  
     if (!token) {
       toast.error("You must be logged in to add users.");
       return;
     }
-
+  
     try {
       const response = await addUser(newUser, token);
-
+  
       if (response.message === "User added successfully") {
-        setUsers((prevUsers) => [...prevUsers, newUser]);
+        // Kiểm tra và bổ sung giá trị totalCalories nếu cần
+        const newUserWithTotalCalories = { ...newUser, totalCalories: 0 };
+        setUsers((prevUsers) => [...prevUsers, newUserWithTotalCalories]);
         toast.success("User added successfully.");
         setShowAddUserForm(false);
-        setNewUser({ name: "", email: "", password: "", role: "user" }); // After adding a user
+        setNewUser({ _id: "", name: "", email: "", password: "", role: "user" }); // After adding a user
         setUserToEdit(null); // After editing a user
       } else {
         toast.error(response.message);
@@ -86,6 +140,7 @@ const UsersManagement: React.FC = () => {
       toast.error("An error occurred while adding the user.");
     }
   };
+  
 
   const handleDelete = async (email: string) => {
     const confirmDelete = window.confirm(
@@ -160,7 +215,7 @@ const UsersManagement: React.FC = () => {
             )
           );
           toast.success("User updated successfully.");
-          setNewUser({ name: "", email: "", password: "", role: "user" }); // After adding a user
+          setNewUser({ _id: "", name: "", email: "", password: "", role: "user" }); // After adding a user
           setUserToEdit(null); // After editing a user
           setShowEditUserForm(false);
         } else {
@@ -203,10 +258,10 @@ const UsersManagement: React.FC = () => {
             <thead>
               <tr>
                 <th style={{ ...styles.th, width: "30%" }}>Name</th>
-                <th style={{ ...styles.th, width: "30%" }}>Email</th>
+                <th style={{ ...styles.th, width: "25%" }}>Email</th>
                 <th style={{ ...styles.th, width: "15%" }}>Password</th>
                 <th style={{ ...styles.th, width: "10%" }}>Role</th>
-                <th style={{ ...styles.th, width: "15%" }}>Action</th>
+                <th style={{ ...styles.th, width: "20%" }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -232,6 +287,12 @@ const UsersManagement: React.FC = () => {
                     >
                       Delete
                     </button>
+                    <button
+                        onClick={() => handleShowUserDetail(user._id)}
+                        style={styles.viewButton}
+                      >
+                        Show
+                      </button>
                   </td>
                 </tr>
               ))}
@@ -260,6 +321,30 @@ const UsersManagement: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {showUserDetailModal && userDetail && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
+            <h3>User Details</h3>
+            <p>
+              <strong>Name:</strong> {userDetail.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {userDetail.email}
+            </p>
+            <p>
+              <strong>Total Calories Consumed:</strong>{" "}
+              {userDetail.totalCaloriesBurned} kcal
+            </p>
+            <button
+              onClick={() => setShowUserDetailModal(false)}
+              style={styles.deleteButton}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {showAddUserForm && (
         <div style={styles.modalOverlay}>

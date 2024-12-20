@@ -113,4 +113,27 @@ export const deleteUser = async (email: string, token: string): Promise<any> => 
   }
 
   return response.json();
+}; 
+
+export const getUserById = async (
+  userId: string,
+  token: string
+): Promise<{ name: string; email: string; role: string; totalCaloriesBurned: number }> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user by ID');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
 };

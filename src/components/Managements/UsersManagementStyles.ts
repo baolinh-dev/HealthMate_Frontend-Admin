@@ -65,7 +65,27 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+  }, 
+  viewButton: {
+    backgroundColor: "#fd7e14",
+    color: "white",
+    padding: "5px 10px",
+    margin: "0 4px",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: "4px",
   },
+  
+  closeButton: {
+    backgroundColor: "#f44336",
+    color: "white",
+    padding: "8px 12px",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: "4px",
+    marginTop: "12px",
+  },
+  
   formField: {
     display: "flex",
     flexDirection: "column",
