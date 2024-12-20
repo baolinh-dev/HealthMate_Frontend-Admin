@@ -63,9 +63,11 @@ const styles: { [key: string]: React.CSSProperties } = {
       backgroundColor: "#28a745",
       color: "white",
       padding: "10px 20px",
-      border: "none",
-      borderRadius: 5,
-      cursor: "pointer",
+      cursor: "pointer", 
+      maxHeight: "40px", 
+      border: "1px solid #ccc",   
+      borderRadius: "4px",
+      marginLeft: "12px"
     },
     modalOverlay: {
       position: "fixed",
@@ -105,7 +107,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     paginationContainer: {
       display: "flex", 
       justifyContent: "center"
-    },     
+    },      
+    searchContainer: {
+      display: "flex"
+    }
   };
   
   export default styles;

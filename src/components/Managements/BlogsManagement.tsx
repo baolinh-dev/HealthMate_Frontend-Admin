@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { fetchBlogs, updateBlog, deleteBlog, addBlog } from "../../apis/blogsApi";
+import {
+  fetchBlogs,
+  updateBlog,
+  deleteBlog,
+  addBlog,
+} from "../../apis/blogsApi";
 import { Blog } from "../../interfaces/Blog";
 import styles from "./BlogsTableStyles";
 
@@ -20,13 +25,19 @@ const BlogsTable: React.FC = () => {
   // State for new blog post
   const [newBlogTitle, setNewBlogTitle] = useState<string>("");
   const [newBlogContent, setNewBlogContent] = useState<string>("");
-  const [newBlogStatus, setNewBlogStatus] = useState<"draft" | "published">("draft");
+  const [newBlogStatus, setNewBlogStatus] = useState<"draft" | "published">(
+    "draft"
+  );
   const [newBlogImage, setNewBlogImage] = useState<string>("");
 
   useEffect(() => {
     const loadBlogs = async () => {
       try {
-        const { blogs, totalItems } = await fetchBlogs(page, perPage, searchBlog);
+        const { blogs, totalItems } = await fetchBlogs(
+          page,
+          perPage,
+          searchBlog
+        );
         setBlogs(blogs); // Set the blogs data
         setTotalBlogs(totalItems); // Set the total count of blogs for pagination
       } catch (err) {
@@ -50,7 +61,9 @@ const BlogsTable: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this blog?"
+    );
     if (confirmDelete) {
       try {
         await deleteBlog(id);
@@ -60,7 +73,10 @@ const BlogsTable: React.FC = () => {
     }
   };
 
-  const handleStatusChange = async (id: string, newStatus: "draft" | "published") => {
+  const handleStatusChange = async (
+    id: string,
+    newStatus: "draft" | "published"
+  ) => {
     try {
       await updateBlog(id, { status: newStatus });
     } catch (err) {
@@ -68,7 +84,12 @@ const BlogsTable: React.FC = () => {
     }
   };
 
-  const handleModalSave = async (title: string, content: string, status: "draft" | "published", image: string) => {
+  const handleModalSave = async (
+    title: string,
+    content: string,
+    status: "draft" | "published",
+    image: string
+  ) => {
     if (selectedBlog) {
       try {
         await updateBlog(selectedBlog._id, { title, content, status, image });
@@ -170,7 +191,11 @@ const BlogsTable: React.FC = () => {
           style={styles.searchInput}
         />
 
-        <select style={styles.searchSelect} value={status} onChange={handleStatusChangeInput}>
+        <select
+          style={styles.searchSelect}
+          value={status}
+          onChange={handleStatusChangeInput}
+        >
           <option value="">All Status</option>
           <option value="draft">Draft</option>
           <option value="published">Published</option>
@@ -178,6 +203,10 @@ const BlogsTable: React.FC = () => {
 
         <button style={styles.searchButton} onClick={handleSearch}>
           Search
+        </button>
+
+        <button onClick={handleAddModalOpen} style={styles.addButton}>
+          Add
         </button>
       </div>
 
@@ -200,7 +229,10 @@ const BlogsTable: React.FC = () => {
                 <select
                   value={blog.status}
                   onChange={(e) =>
-                    handleStatusChange(blog._id, e.target.value as "draft" | "published")
+                    handleStatusChange(
+                      blog._id,
+                      e.target.value as "draft" | "published"
+                    )
                   }
                 >
                   <option value="draft">Draft</option>
@@ -212,10 +244,16 @@ const BlogsTable: React.FC = () => {
               </td>
               <td style={thTdStyle}>
                 <div style={styles.actionGroup}>
-                  <button style={styles.editButton} onClick={() => handleEdit(blog)}>
+                  <button
+                    style={styles.editButton}
+                    onClick={() => handleEdit(blog)}
+                  >
                     Edit
                   </button>
-                  <button style={styles.deleteButton} onClick={() => handleDelete(blog._id)}>
+                  <button
+                    style={styles.deleteButton}
+                    onClick={() => handleDelete(blog._id)}
+                  >
                     Delete
                   </button>
                 </div>
@@ -225,19 +263,23 @@ const BlogsTable: React.FC = () => {
         </tbody>
       </table>
 
-      <div style={styles.pagination}>
-        <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Previous
-        </button>
-        <span>Page {page}</span>
-        <button onClick={() => handlePageChange(page + 1)} disabled={page * perPage >= totalBlogs}>
-          Next
-        </button>
+      <div style={styles.paginationContainer}>
+        <div style={styles.pagination}>
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page <= 1}
+          >
+            Previous
+          </button>
+          <span>Page {page}</span>
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page * perPage >= totalBlogs}
+          >
+            Next
+          </button>
+        </div>
       </div>
-
-      <button onClick={handleAddModalOpen} style={styles.addButton}>
-        Add New Blog
-      </button>
 
       {/* Modal for adding a new blog */}
       {isAddModalOpen && (
@@ -259,7 +301,9 @@ const BlogsTable: React.FC = () => {
             />
             <select
               value={newBlogStatus}
-              onChange={(e) => setNewBlogStatus(e.target.value as "draft" | "published")}
+              onChange={(e) =>
+                setNewBlogStatus(e.target.value as "draft" | "published")
+              }
               style={styles.select}
             >
               <option value="draft">Draft</option>
@@ -272,8 +316,12 @@ const BlogsTable: React.FC = () => {
               onChange={(e) => setNewBlogImage(e.target.value)}
               style={styles.input}
             />
-            <button onClick={handleAddBlog} style={styles.saveButton}>Save</button>
-            <button onClick={handleAddModalClose} style={styles.cancelButton}>Cancel</button>
+            <button onClick={handleAddBlog} style={styles.saveButton}>
+              Save
+            </button>
+            <button onClick={handleAddModalClose} style={styles.cancelButton}>
+              Cancel
+            </button>
           </div>
         </div>
       )}

@@ -20,8 +20,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     searchButton: {
       height: "40px",
       borderRadius: "4px",
-      border: "1px solid #ddd",
-    },
+      border: "1px solid #ddd", 
+      marginRight: "12px"
+    }, 
+    paginationContainer: {
+      display: "flex", 
+      justifyContent: "center"
+    },  
     modal: {
       position: "fixed",
       top: 0,

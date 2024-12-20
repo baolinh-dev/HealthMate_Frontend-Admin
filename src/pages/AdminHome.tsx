@@ -24,7 +24,7 @@ const AdminHome = () => {
   return (
     <div>
         <AdminLayout>
-          <p>Ok</p>
+          <p>Đây là trang Admin Home</p>
         </AdminLayout>
     </div>
   );

@@ -31,11 +31,11 @@ const UsersManagement: React.FC = () => {
       user.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1); 
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  console.log('====================================');
+  console.log("====================================");
   console.log("search", searchQuery);
-  console.log('====================================');
+  console.log("====================================");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -184,7 +184,7 @@ const UsersManagement: React.FC = () => {
         <p>No users found.</p>
       ) : (
         <>
-          <div>
+          <div style={styles.searchContainer}>
             <input
               type="text"
               style={styles.inputSearch} // Use imported styles
@@ -192,6 +192,12 @@ const UsersManagement: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, email, or role"
             />
+            <button
+              onClick={() => setShowAddUserForm(true)}
+              style={styles.addButton}
+            >
+              Add
+            </button>
           </div>
           <table style={styles.table}>
             <thead>
@@ -254,10 +260,6 @@ const UsersManagement: React.FC = () => {
           </button>
         </div>
       </div>
-
-      <button onClick={() => setShowAddUserForm(true)} style={styles.addButton}>
-        Add User
-      </button>
 
       {showAddUserForm && (
         <div style={styles.modalOverlay}>

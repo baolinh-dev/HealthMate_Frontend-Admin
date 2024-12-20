@@ -3,14 +3,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     borderCollapse: "collapse",
     marginBottom: "20px",
-  },
+  }, 
+  searchContainer: {
+    display: "flex"
+  }, 
+  
   inputSearch: {
     width: "100%",
     padding: "12px",
     borderRadius: "8px",
     marginBottom: "12px",
     border: "1px solid #ccc",
-  },
+  }, 
+  
   th: {
     border: "1px solid #ddd",
     padding: "8px",
@@ -27,7 +32,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
     border: "none",
     borderRadius: "5px",
-    cursor: "pointer",
+    cursor: "pointer", 
+    maxHeight: "38px", 
+    marginLeft: "12px"
   },
   editButton: {
     padding: "5px 10px",

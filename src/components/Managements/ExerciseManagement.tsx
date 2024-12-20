@@ -78,13 +78,24 @@ const ExerciseManagement: React.FC = () => {
   return (
     <div>
       <h2>Healthmate - Manage Exercises</h2>
-      <input
-        type="text"
-        placeholder="Search exercises"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={styles.searchInput}
-      />
+      <div style={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search exercises"
+          value={search} 
+          onChange={(e) => setSearch(e.target.value)}
+          style={styles.searchInput}
+        />
+        <button
+          onClick={() => {
+            setForm({});
+            setShowModal(true);
+          }}
+          style={styles.addButton}
+        >
+          Add
+        </button>
+      </div>
       <table style={styles.table}>
         <thead>
           <tr>
@@ -131,16 +142,6 @@ const ExerciseManagement: React.FC = () => {
           ))}
         </tbody>
       </table>
-
-      <button
-        onClick={() => {
-          setForm({});
-          setShowModal(true);
-        }}
-        style={styles.addButton}
-      >
-        Add Exercise
-      </button>
 
       {/* Pagination Controls */}
       <div style={styles.paginationContainer}>
