@@ -101,8 +101,11 @@ const styles: { [key: string]: React.CSSProperties } = {
       border: "none",
       borderRadius: 5,
       cursor: "pointer",
-    }, 
-    
+    },   
+    paginationContainer: {
+      display: "flex", 
+      justifyContent: "center"
+    },     
   };
   
   export default styles;

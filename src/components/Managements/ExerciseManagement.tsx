@@ -6,7 +6,7 @@ import {
   deleteExercise,
   Exercise,
 } from "../../apis/exerciseApi";
-import styles from './ExerciseManagementStyles';
+import styles from "./ExerciseManagementStyles";
 
 const ExerciseManagement: React.FC = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -14,8 +14,8 @@ const ExerciseManagement: React.FC = () => {
   const [form, setForm] = useState<Partial<Exercise>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);  // Trạng thái trang hiện tại
-  const [totalPages, setTotalPages] = useState<number>(1);  // Trạng thái tổng số trang
+  const [currentPage, setCurrentPage] = useState<number>(1); // Trạng thái trang hiện tại
+  const [totalPages, setTotalPages] = useState<number>(1); // Trạng thái tổng số trang
 
   const loadExercises = async (page: number, searchTerm: string) => {
     try {
@@ -26,7 +26,6 @@ const ExerciseManagement: React.FC = () => {
       console.error("Error loading exercises:", error);
     }
   };
-  
 
   const handleSave = async () => {
     try {
@@ -38,7 +37,7 @@ const ExerciseManagement: React.FC = () => {
       }
       setForm({});
       setShowModal(false);
-      loadExercises(currentPage, search);  // Tải lại dữ liệu sau khi thêm/sửa
+      loadExercises(currentPage, search); // Tải lại dữ liệu sau khi thêm/sửa
     } catch (error) {
       console.error("Error saving exercise:", error);
     }
@@ -48,7 +47,7 @@ const ExerciseManagement: React.FC = () => {
     if (window.confirm("Are you sure you want to delete this exercise?")) {
       try {
         await deleteExercise(id);
-        loadExercises(currentPage, search);  // Tải lại dữ liệu sau khi xóa
+        loadExercises(currentPage, search); // Tải lại dữ liệu sau khi xóa
       } catch (error) {
         console.error("Error deleting exercise:", error);
       }
@@ -71,12 +70,10 @@ const ExerciseManagement: React.FC = () => {
     setCurrentPage(newPage);
     loadExercises(newPage, search); // Bao gồm từ khóa tìm kiếm khi đổi trang
   };
-  
 
   useEffect(() => {
     loadExercises(currentPage, search); // Truyền từ khóa tìm kiếm
   }, [currentPage, search]);
-  
 
   return (
     <div>
@@ -146,22 +143,29 @@ const ExerciseManagement: React.FC = () => {
       </button>
 
       {/* Pagination Controls */}
-      <div style={styles.pagination}>
-        <button
-          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-          disabled={currentPage === 1}
-          style={styles.paginationButton}
-        >
-          Previous
-        </button>
-        <span> Page {currentPage} of {totalPages} </span>
-        <button
-          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-          style={styles.paginationButton}
-        >
-          Next
-        </button>
+      <div style={styles.paginationContainer}>
+        <div style={styles.pagination}>
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            style={styles.paginationButton}
+          >
+            Previous
+          </button>
+          <span>
+            {" "}
+            Page {currentPage} of {totalPages}{" "}
+          </span>
+          <button
+            onClick={() =>
+              handlePageChange(Math.min(totalPages, currentPage + 1))
+            }
+            disabled={currentPage === totalPages}
+            style={styles.paginationButton}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {showModal && (
