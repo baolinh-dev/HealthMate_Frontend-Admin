@@ -1,20 +1,22 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import AdminPage from "../pages/AdminHome";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+
 import AdminUsers from "../pages/AdminUsers";
 import AdminBlog from "../pages/AdminBlog";
-import AdminWorkout from "../pages/AdminWorkout";
 import LoginPage from "../pages/LoginPage";
 import AdminExcercises from "../pages/AdminExcercises";
 
 const AppRoutes: React.FC = () => {
   return (
     <Router>
-      <Routes> 
+      <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/admin/users" element={<AdminUsers />} /> 
-        <Route path="/admin/workout" element={<AdminWorkout />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/excercises" element={<AdminExcercises />} />
         <Route path="/admin/blog" element={<AdminBlog />} />
       </Routes>

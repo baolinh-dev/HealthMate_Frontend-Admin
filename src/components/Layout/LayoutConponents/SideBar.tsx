@@ -22,32 +22,12 @@ const Sidebar: React.FC = () => {
         <ul style={navListStyle}>
           <li style={navListItemStyle}>
             <Link
-              style={getLinkStyle(hovered === "home")}
-              to="/admin"
-              onMouseOver={() => handleMouseOver("home")}
-              onMouseOut={handleMouseOut}
-            >
-              <AiFillHome style={iconStyle} /> Home
-            </Link>
-          </li>
-          <li style={navListItemStyle}>
-            <Link
               style={getLinkStyle(hovered === "users")}
               to="/admin/users"
               onMouseOver={() => handleMouseOver("users")}
               onMouseOut={handleMouseOut}
             >
               <AiFillAppstore style={iconStyle} /> Users
-            </Link>
-          </li>
-          <li style={navListItemStyle}>
-            <Link
-              style={getLinkStyle(hovered === "workout")}
-              to="/admin/workout"
-              onMouseOver={() => handleMouseOver("workout")}
-              onMouseOut={handleMouseOut}
-            >
-              <GiWeightLiftingUp style={iconStyle} /> Workout
             </Link>
           </li>
           <li style={navListItemStyle}>
@@ -104,7 +84,6 @@ const sidebarStyle: React.CSSProperties = {
 
 const logoContainer: React.CSSProperties = {
   display: "flex",
-  border: "1px solid #ccc",
   justifyContent: "center",
   alignItems: "center",
 };
